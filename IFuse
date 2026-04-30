@@ -1,0 +1,39 @@
+Public Class Form1
+    ' बटन थिच्दा चल्ने भाग
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles CalcButton.Click
+        Dim valueLeft As Integer
+        Dim valueRight As Integer
+        Dim valueAnswer As Integer
+
+        ' Integer.Parse प्रयोग गर्दा स्पेलिङ ध्यान दिनुहोस्
+        valueLeft = Integer.Parse(Input1TextBox.Text)
+        valueRight = Integer.Parse(Input2TextBox.Text)
+
+        ' दुई नम्बर जोड्ने
+        valueAnswer = valueLeft + valueRight
+
+        ' उत्तर देखाउने
+        AnswerTextBox.Text = valueAnswer.ToString()
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles CalcButton.Click
+        ' १. यदि बाकस खाली छ भने?
+        If Input1TextBox.Text = "" Or Input2TextBox.Text = "" Then
+            MessageBox.Show("कृपया दुवै बाकसमा केही लेख्नुहोस्।")
+            Exit Sub ' यहाँबाट तलको कोड चल्दैन
+        End If
+
+        ' २. यदि नम्बर हो कि होइन भनेर चेक गर्ने (If को प्रयोग)
+        If IsNumeric(Input1TextBox.Text) And IsNumeric(Input2TextBox.Text) Then
+            ' --- यदि दुवै नम्बर हुन् भने (सही अवस्था) ---
+            Dim valueLeft As Integer = Val(Input1TextBox.Text)
+            Dim valueRight As Integer = Val(Input2TextBox.Text)
+            Dim valueAnswer As Integer = valueLeft + valueRight
+
+            AnswerTextBox.Text = valueAnswer.ToString()
+        Else
+            ' --- यदि नम्बर होइन भने (गलत अवस्था) ---
+            MessageBox.Show("अक्षर होइन, कृपया नम्बर मात्र हाल्नुहोस्।")
+        End If
+    End Sub
+End Class
