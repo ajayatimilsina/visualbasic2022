@@ -1,0 +1,18 @@
+Public Class Form1
+    ' बटन थिच्दा चल्ने भाग
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles CalcButton.Click
+        Dim valueLeft As Integer
+        Dim valueRight As Integer
+        Dim valueAnswer As Integer
+
+        ' Integer.Parse प्रयोग गर्दा स्पेलिङ ध्यान दिनुहोस्
+        valueLeft = Integer.Parse(Input1TextBox.Text)
+        valueRight = Integer.Parse(Input2TextBox.Text)
+
+        ' दुई नम्बर जोड्ने
+        valueAnswer = valueLeft + valueRight
+
+        ' उत्तर देखाउने
+        AnswerTextBox.Text = valueAnswer.ToString()
+    End Sub
+End Class
