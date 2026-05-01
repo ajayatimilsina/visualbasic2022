@@ -1,0 +1,25 @@
+Public Class Form1
+    ' --- 準備：箱を用意する ---
+    Dim nowtime As Integer = 0    ' 経過した時間を数える箱
+    Dim endtime As Integer = 10   ' 何秒で終わるかを決める箱
+
+    ' --- タイマーが1秒刻むごとに動く命令 ---
+    Private Sub timercontrol_Tick(sender As Object, e As EventArgs) Handles timercontrol.Tick
+
+        ' 1. 「経過時間」に1を足す
+        nowtime = nowtime + 1
+
+        ' 2. 「残り時間」を計算する
+        Dim Remainingtime As Integer = endtime - nowtime
+
+        ' 3. 画面（テキストボックス）に表示する
+        textremainingtime.Text = Remainingtime.ToString()
+
+        ' 4. もし「残り時間」が 0 になったら…
+        If Remainingtime <= 0 Then
+            timercontrol.Stop()           ' タイマーを止める
+            MessageBox.Show("時間になりました！") ' 画面にメッセージを出す
+        End If
+
+    End Sub
+End Class
