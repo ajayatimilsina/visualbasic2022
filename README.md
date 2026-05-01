@@ -9,3 +9,5 @@ Textfusenmemo,画面に置いた文字を書く箱（TextBox）,(Name) が同じ
 ColorDialogfusen,ツールボックスから置いた色の選択肢,(Name) が同じか？
 
 FormFusen,画面そのもの（Form）,プロジェクトで設定した名前か？
+変えましたが確認中です。
+
