@@ -1,0 +1,38 @@
+Public Class FormFusen
+    ' マウスの位置を覚えておく箱
+    Private mouseX As Integer
+    Private mouseY As Integer
+
+    ' --- 1. [修正] Escキーで閉じる ---
+    Private Sub Textfusenmemo_KeyDown(sender As Object, e As KeyEventArgs) Handles Textfusenmemo.KeyDown
+        If e.KeyCode = Keys.Escape Then
+            Me.Close()
+        End If
+    End Sub
+
+    ' --- 2. [修正] マウスを押した瞬間の位置を記録 ---
+    Private Sub Textfusenmemo_MouseDown(sender As Object, e As MouseEventArgs) Handles Textfusenmemo.MouseDown
+        ' MouseButtons.Left が正しいつづりです
+        If e.Button = MouseButtons.Left Then
+            mouseX = e.X
+            mouseY = e.Y
+        End If
+    End Sub
+
+    ' --- 3. [修正] マウスを動かしている間、付箋を移動させる ---
+    Private Sub Textfusenmemo_MouseMove(sender As Object, e As MouseEventArgs) Handles Textfusenmemo.MouseMove
+        If e.Button = MouseButtons.Left Then
+            ' 付箋（自分自身）の位置を動かす計算
+            Me.Left = Me.Left + (e.X - mouseX)
+            Me.Top = Me.Top + (e.Y - mouseY)
+        End If
+    End Sub
+
+    ' --- 4. [修正] ダブルクリックで色を変える ---
+    Private Sub Textfusenmemo_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles Textfusenmemo.MouseDoubleClick
+        ' ShowDialogの結果が「OK」の時だけ色を変えるのが安全です
+        If ColorDialogFusen.ShowDialog() = DialogResult.OK Then
+            Textfusenmemo.BackColor = ColorDialogFusen.Color
+        End If
+    End Sub
+End Class
