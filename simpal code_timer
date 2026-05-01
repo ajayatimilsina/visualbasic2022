@@ -1,0 +1,25 @@
+Public Class Form1
+    ' This is our "Box" to hold the remaining seconds
+    Dim secondsLeft As Integer = 10
+
+    ' This happens when you click the Start Button
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        secondsLeft = 10              ' Reset to 10 seconds
+        Label1.Text = "10"             ' Show 10 on the screen
+        Timer1.Interval = 1000        ' Set speed to 1 second (1000ms)
+        Timer1.Start()                ' Start the heart beating!
+    End Sub
+
+    ' This happens every 1 second (Every "Tick")
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+        
+        If secondsLeft > 0 Then
+            secondsLeft -= 1          ' Subtract 1 from the box
+            Label1.Text = secondsLeft.ToString() ' Update the screen
+        Else
+            Timer1.Stop()             ' Stop at zero
+            MsgBox("Time is up!")     ' Pop up a message
+        End If
+
+    End Sub
+End Class
