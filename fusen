@@ -1,0 +1,40 @@
+Public Class FormFusen
+    ' マウスが押された時の「場所」を一時保存する変数（箱）
+    Private mouseX As Integer
+    Private mouseY As Integer
+
+    ' --- 1. Escキーを押すとアプリが終了する ---
+    Private Sub Textfusenmemo_KeyDown(sender As Object, e As KeyEventArgs) Handles Textfusenmemo.KeyDown
+        If e.KeyCode = Keys.Escape Then
+            Me.Close()
+        End If
+    End Sub
+
+    ' --- 2. マウスの左ボタンを押した瞬間の座標を記録する ---
+    Private Sub Textfusenmemo_MouseDown(sender As Object, e As MouseEventArgs) Handles Textfusenmemo.MouseDown
+        If e.Button = MouseButtons.Left Then
+            ' 今のマウスの位置を箱に入れておく
+            mouseX = e.X
+            mouseY = e.Y
+        End If
+    End Sub
+
+    ' --- 3. マウスを動かしている間、付箋を移動させる ---
+    Private Sub Textfusenmemo_MouseMove(sender As Object, e As MouseEventArgs) Handles Textfusenmemo.MouseMove
+        If e.Button = MouseButtons.Left Then
+            ' 「今の付箋の位置」に「マウスが動いた距離」を足し算して動かす
+            Me.Left = Me.Left + (e.X - mouseX)
+            Me.Top = Me.Top + (e.Y - mouseY)
+        End If
+    End Sub
+
+    ' --- 4. ダブルクリックで色の選択画面を出す ---
+    Private Sub Textfusenmemo_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles Textfusenmemo.MouseDoubleClick
+        ' 色を選ぶ画面を表示して「OK」が押されたら
+        If ColorDialogfusen.ShowDialog() = DialogResult.OK Then
+            ' テキストボックスの背景色を選択した色に変える
+            Textfusenmemo.BackColor = ColorDialogfusen.Color
+        End If
+    End Sub
+
+End Class
