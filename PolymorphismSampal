@@ -53,3 +53,28 @@ Public Class Dog
     End Function
 
 End Class
+
+
+Public Class Cat
+
+    ' Inherit from the Animal class
+    Inherits Animal
+
+    ' Ear shape
+    Public Property Ear As String = "Round"
+
+    ' Cat singing image
+    Public Overrides Function Sing() As Image
+
+        Return My.Resources.CatCookieSing
+
+    End Function
+
+    ' Cat normal image
+    Public Overrides Function Reset() As Image
+
+        Return My.Resources.CatCookie
+
+    End Function
+
+End Class
