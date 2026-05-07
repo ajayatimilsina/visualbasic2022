@@ -1,1 +1,49 @@
 
+Public Class Form1
+
+    ' クラス内部の変数
+    ' 外部から直接操作できないように Private にする
+    Private colorName As String
+
+    ' プロパティ
+    Public Property ColorName() As String
+
+        ' 値を取得する
+        Get
+            Return colorName
+        End Get
+
+        ' 値を設定する
+        Set(ByVal value As String)
+
+            ' 値のチェック
+            If value = "" Then
+
+                ' 値が未入力の場合
+                colorName = "Black"
+
+            Else
+
+                ' 入力された値を設定
+                colorName = value
+
+            End If
+
+        End Set
+
+    End Property
+
+    Private Sub ButtonSetColor_Click(
+        sender As Object,
+        e As EventArgs
+    ) Handles ButtonSetColor.Click
+
+        ' プロパティへ値を設定
+        ColorName = TextBoxColor.Text
+
+        ' 結果を表示
+        LabelResult.Text = ColorName
+
+    End Sub
+
+End Class
