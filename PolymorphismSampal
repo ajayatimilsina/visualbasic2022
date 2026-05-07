@@ -103,3 +103,36 @@ Public Class Bird
     End Function
 
 End Class
+
+Public Class Form1
+
+    ' An instance variable of the Animal class
+    Dim animalCookie As Animal
+
+    ' Animal cookies make sounds
+    Private Sub ButtonSing_Click(
+        sender As Object,
+        e As EventArgs
+    ) Handles ButtonSing.Click
+
+        ' Set instance of Dog class
+        animalCookie = New Dog()
+
+        ' Show dog singing image
+        PictureBoxDog.Image = animalCookie.Sing()
+
+        ' Set instance of Cat class
+        animalCookie = New Cat()
+
+        ' Show cat singing image
+        PictureBoxCat.Image = animalCookie.Sing()
+
+        ' Set instance of Bird class
+        animalCookie = New Bird()
+
+        ' Show bird singing image
+        PictureBoxBird.Image = animalCookie.Sing()
+
+    End Sub
+
+End Class
