@@ -19,3 +19,27 @@ Public Class Animal
     End Function
 
 End Class
+
+
+' Animal クラスをけいしょうした
+' Cat クラスです
+
+Public Class Cat
+
+    Inherits Animal
+
+    ' Animal クラスで
+    ' ていぎされていない
+    ' ぶぶんだけを きじゅつします
+
+    ' みみ の かたち の プロパティ
+    Public Property Ear As String
+
+    ' Cat クラス どくじ の メソッド
+    Public Function CatSing() As String
+
+        Return "ニャー"
+
+    End Function
+
+End Class
