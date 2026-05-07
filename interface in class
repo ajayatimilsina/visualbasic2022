@@ -1,0 +1,34 @@
+' Implement interface in class
+Public Class Dog
+
+    Inherits Animal
+    Implements ITopping
+
+    ' Interface property implementation
+    Public Property WrapChocolate As String =
+        "White Chocolate" _
+        Implements ITopping.WrapChocolate
+
+    ' Dog singing image
+    Public Overrides Function Sing() As Image
+
+        Return If(
+            TypeOf Me Is ITopping,
+            My.Resources.DogCookieBin,
+            My.Resources.DogCookieSing
+        )
+
+    End Function
+
+    ' Dog normal image
+    Public Overrides Function Reset() As Image
+
+        Return If(
+            TypeOf Me Is ITopping,
+            My.Resources.DogCookieWhite,
+            My.Resources.DogCookie
+        )
+
+    End Function
+
+End Class
