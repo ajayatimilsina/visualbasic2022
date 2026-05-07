@@ -1,0 +1,65 @@
+Visual Studio の「間違い探しゲーム」の完成コードを、見やすく整理して同じ形で書くとこうなります。
+
+Public Class FormGame
+    ' 正解の文字
+    Dim correctText As String = "萩"
+    ' 間違いの文字
+    Dim mistakeText As String = "荻"
+    ' 経過時間
+    Dim nowTime As Double
+    ' 25個のボタンのいずれかをクリックした時
+    Private Sub Buttons_Click(sender As Object,
+                              e As EventArgs) _
+        Handles Button1.Click, Button2.Click, Button3.Click,
+                Button4.Click, Button5.Click, Button6.Click,
+                Button7.Click, Button8.Click, Button9.Click,
+                Button10.Click, Button11.Click, Button12.Click,
+                Button13.Click, Button14.Click, Button15.Click,
+                Button16.Click, Button17.Click, Button18.Click,
+                Button19.Click, Button20.Click, Button21.Click,
+                Button22.Click, Button23.Click, Button24.Click,
+                Button25.Click
+        ' 正解だった場合
+        If CType(sender, Button).Text = correctText Then
+            Timer1.Stop()
+            MessageBox.Show(
+                "正解です！" & vbCrLf &
+                "記録 : " &
+                nowTime.ToString("0.00") & " 秒"
+            )
+        Else
+            ' 間違えた場合は10秒追加
+            nowTime = nowTime + 10
+        End If
+    End Sub
+    ' スタートボタンをクリックした時
+    Private Sub ButtonStart_Click(sender As Object,
+                                  e As EventArgs) _
+        Handles ButtonStart.Click
+        TextHunt.Text = correctText
+        Dim rnd As New Random
+        ' 0～24 のランダム番号
+        Dim randomResult As Integer =
+            rnd.Next(25)
+        ' 全部を間違い文字にする
+        For i As Integer = 0 To
+            SplitContainer1.Panel2.Controls.Count - 1
+            SplitContainer1.Panel2.Controls(i).Text =
+                mistakeText
+        Next
+        ' 1つだけ正解文字にする
+        SplitContainer1.Panel2.Controls(randomResult).Text =
+            correctText
+        ' タイマー初期化
+        nowTime = 0
+        Timer1.Start()
+    End Sub
+    ' 0.02秒ごとのタイマー処理
+    Private Sub Timer1_Tick(sender As Object,
+                            e As EventArgs) _
+        Handles Timer1.Tick
+        nowTime = nowTime + 0.02
+        TextTimer.Text =
+            nowTime.ToString("0.00")
+    End Sub
+End Class
