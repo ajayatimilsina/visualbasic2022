@@ -78,3 +78,28 @@ Public Class Cat
     End Function
 
 End Class
+
+
+Public Class Bird
+
+    ' Inherit from the Animal class
+    Inherits Animal
+
+    ' Shape of the beak
+    Public Property Beak As String = "Triangle"
+
+    ' Bird singing image
+    Public Overrides Function Sing() As Image
+
+        Return My.Resources.BirdCookieSing
+
+    End Function
+
+    ' Bird normal image
+    Public Overrides Function Reset() As Image
+
+        Return My.Resources.BirdCookie
+
+    End Function
+
+End Class
