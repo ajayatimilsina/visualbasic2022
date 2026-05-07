@@ -1,0 +1,24 @@
+方法1（おすすめ）
+
+PowerShell を開く
+
+Windowsキー
+PowerShell と検索
+「Windows PowerShell」を開く
+そこで実行
+irm https://ollama.com/install.ps1 | iex
+方法2
+
+cmd から PowerShell を使う
+
+そのまま cmd にこれを入力:
+
+powershell -Command "irm https://ollama.com/install.ps1 | iex"
+
+インストール後は確認で:
+
+ollama --version
+
+AIモデル起動:
+
+ollama run llama3
