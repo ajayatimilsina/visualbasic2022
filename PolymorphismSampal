@@ -28,3 +28,28 @@ Public Class Animal
     End Function
 
 End Class
+
+
+Public Class Dog
+
+    ' Inherit from the Animal class
+    Inherits Animal
+
+    ' Nose shape
+    Public Property Nose As String = ""
+
+    ' Dog singing image
+    Public Overrides Function Sing() As Image
+
+        Return My.Resources.DogCookieSing
+
+    End Function
+
+    ' Dog normal image
+    Public Overrides Function Reset() As Image
+
+        Return My.Resources.DogCookie
+
+    End Function
+
+End Class
