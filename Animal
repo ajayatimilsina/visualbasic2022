@@ -1,0 +1,27 @@
+Public Class Animal
+
+    Public name As String
+    ' 動物の名前
+
+    Public color As String
+    ' 色
+
+    Public Function Sing() As String
+
+        Dim resultString As String
+
+        If name = "ネコ" Then
+            resultString = "ニャー"
+
+        ElseIf name = "イヌ" Then
+            resultString = "ワン"
+
+        Else
+            resultString = "?"
+        End If
+
+        Return resultString
+
+    End Function
+
+End Class
