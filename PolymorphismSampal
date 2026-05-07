@@ -1,1 +1,30 @@
 
+Public Class Animal
+
+    ' すべての動物クッキーに
+    ' 共通している値を定義
+
+    ' 色のプロパティ
+    Public Property Color As String = "茶"
+
+    ' 匂いのプロパティ
+    Public Property Smell As String = "コーヒー"
+
+    ' 味のプロパティ
+    Public Property Flavor As String = "チョコレート"
+
+    ' 動物の鳴き声
+    Public Overridable Function Sing() As Image
+
+        Return My.Resources.AnimalCookieSing
+
+    End Function
+
+    ' クッキー画像
+    Public Overridable Function Reset() As Image
+
+        Return My.Resources.AnimalCookie
+
+    End Function
+
+End Class
