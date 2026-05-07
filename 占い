@@ -1,0 +1,56 @@
+Public Class Form1
+
+    Private Sub ButtonUranaiStart_Click(
+        sender As Object,
+        e As EventArgs
+    ) Handles ButtonUranaiStart.Click
+
+        ' 年間累積日を記憶する変数
+        Dim dateNumber As Integer
+
+        ' 選んだ日付から年間累積日を取得
+        dateNumber = DateTimeUranai.Value.DayOfYear
+
+        ' 年間累積日を5で割った余りで判定
+        Select Case dateNumber Mod 5
+
+            ' 大吉
+            Case 0
+                PictureBoxResult.Image = My.Resources.Daikichi
+                TextResult.Text =
+                    "思ったことがコードにかけて、ものすごいアプリが作れるかも！"
+
+            ' 中吉
+            Case 1
+                PictureBoxResult.Image = My.Resources.Cyuukichi
+                TextResult.Text =
+                    "書いたコードがビルドエラーも起きず、一発で実行できるかも。"
+
+            ' 小吉
+            Case 2
+                PictureBoxResult.Image = My.Resources.Syoukichi
+                TextResult.Text =
+                    "できた！と思ったら、コードの書き忘れがあるかも。"
+
+            ' 吉
+            Case 3
+                PictureBoxResult.Image = My.Resources.Kichi
+                TextResult.Text =
+                    "なかなかエラーが修正できないかも。"
+
+            ' 凶
+            Case 4
+                PictureBoxResult.Image = My.Resources.Kyou
+                TextResult.Text =
+                    "せっかく書いたプログラムが消えるかも…"
+
+            ' 条件ミス対策
+            Case Else
+                PictureBoxResult.Image = Nothing
+                TextResult.Text = "エラーが発生しました。"
+
+        End Select
+
+    End Sub
+
+End Class
