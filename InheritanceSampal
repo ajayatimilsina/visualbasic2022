@@ -1,1 +1,21 @@
-InheritanceSampal
+Public Class Animal
+
+    ' すべての動物クラスに共通している値
+
+    ' 色のプロパティ（自動実装）
+    Public Property Color As String
+
+    ' 匂いのプロパティ（自動実装）
+    Public Property Smell As String
+
+    ' 味のプロパティ（自動実装）
+    Public Property Flavor As String
+
+    ' 動物の鳴き声
+    Public Function Sing() As String
+
+        Return "?"
+
+    End Function
+
+End Class
