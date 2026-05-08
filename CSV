@@ -1,0 +1,55 @@
+修正した VB.NET コードはこちらです。
+CSVファイルを読み込んで、DataGridView に表示できます。
+
+Imports System.IO
+Imports System.Text
+Public Class Form1
+    Dim dataTable As New DataTable()
+    Private Sub ButtonCsvRead_Click(sender As Object,
+                                    e As EventArgs) _
+                                    Handles ButtonCsvRead.Click
+        ' CSVファイル選択
+        If OpenFileDialogCsv.ShowDialog() = DialogResult.OK Then
+            ' ファイル名表示
+            TextBoxInputCSVFileName.Text =
+                OpenFileDialogCsv.FileName
+            ' CSV読み込み
+            Dim csv As String =
+                File.ReadAllText(
+                    OpenFileDialogCsv.FileName,
+                    Encoding.UTF8)
+            ' DataTable 初期化
+            dataTable = New DataTable()
+            dataTable.TableName = "CSVTable"
+            ' 1行ずつ分割
+            Dim lines() As String =
+                csv.Split(Environment.NewLine)
+            ' ヘッダー取得
+            Dim headers() As String =
+                lines(0).Split(","c)
+            ' Column追加
+            For Each header As String In headers
+                dataTable.Columns.Add(header)
+            Next
+            ' データ追加
+            For i As Integer = 1 To lines.Length - 1
+                If lines(i) <> "" Then
+                    Dim rows() As String =
+                        lines(i).Split(","c)
+                    dataTable.Rows.Add(rows)
+                End If
+            Next
+            ' DataGridViewへ表示
+            DataGridViewCsv.DataSource = dataTable
+        End If
+    End Sub
+End Class
+
+必要なコントロール：
+
+* ButtonCsvRead
+* DataGridViewCsv
+* TextBoxInputCSVFileName
+* OpenFileDialogCsv
+
+をフォームに配置してください。
