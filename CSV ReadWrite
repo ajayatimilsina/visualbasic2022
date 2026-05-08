@@ -1,4 +1,8 @@
- コントロールとプロパティの設定
+ 、コントロールとプロパティの設定
+例
+コントロール名　プロパティ名　　内容
+Textbox        name          Text boxinputCSVFiileName
+               Anchor        Top,Left,Right
 
 Imports System.IO
 Imports System.Text
