@@ -53,3 +53,124 @@ End Class
 * OpenFileDialogCsv
 
 をフォームに配置してください。
+
+Imports System.IO
+Imports System.Text
+Imports System.Data
+
+Public Class Form1
+
+    Dim dataTable As New DataTable()
+
+    ' =========================
+    ' CSV 読み込み
+    ' =========================
+    Private Sub ButtonCsvRead_Click(sender As Object,
+                                    e As EventArgs) _
+                                    Handles ButtonCsvRead.Click
+
+        If OpenFileDialogCsv.ShowDialog() = DialogResult.OK Then
+
+            ' ファイル名表示
+            TextBoxInputCSVFileName.Text =
+                OpenFileDialogCsv.FileName
+
+            ' CSV読み込み
+            Dim csv As String =
+                File.ReadAllText(
+                    OpenFileDialogCsv.FileName,
+                    Encoding.UTF8)
+
+            ' DataTable初期化
+            dataTable = New DataTable()
+            dataTable.TableName = "CSVTable"
+
+            ' 改行分割
+            Dim lines() As String =
+                csv.Split({Environment.NewLine},
+                          StringSplitOptions.RemoveEmptyEntries)
+
+            ' ヘッダー取得
+            Dim headers() As String =
+                lines(0).Split(","c)
+
+            ' Column追加
+            For Each header As String In headers
+                dataTable.Columns.Add(header)
+            Next
+
+            ' データ追加
+            For i As Integer = 1 To lines.Length - 1
+
+                Dim rowData() As String =
+                    lines(i).Split(","c)
+
+                dataTable.Rows.Add(rowData)
+
+            Next
+
+            ' DataGridViewへ表示
+            DataGridViewCsv.DataSource = dataTable
+
+        End If
+
+    End Sub
+
+    ' =========================
+    ' CSV 出力
+    ' =========================
+    Private Sub ButtonCsvWrite_Click(sender As Object,
+                                     e As EventArgs) _
+                                     Handles ButtonCsvWrite.Click
+
+        If SaveFileDialogCsv.ShowDialog() = DialogResult.OK Then
+
+            ' 保存ファイル名表示
+            TextBoxOutputCSVFileName.Text =
+                SaveFileDialogCsv.FileName
+
+            Dim sb As New StringBuilder()
+
+            ' ヘッダー出力
+            For i As Integer = 0 To dataTable.Columns.Count - 1
+
+                sb.Append(dataTable.Columns(i).ColumnName)
+
+                If i < dataTable.Columns.Count - 1 Then
+                    sb.Append(",")
+                End If
+
+            Next
+
+            sb.AppendLine()
+
+            ' データ出力
+            For Each row As DataRow In dataTable.Rows
+
+                For i As Integer = 0 To dataTable.Columns.Count - 1
+
+                    sb.Append(row(i).ToString())
+
+                    If i < dataTable.Columns.Count - 1 Then
+                        sb.Append(",")
+                    End If
+
+                Next
+
+                sb.AppendLine()
+
+            Next
+
+            ' UTF8で保存
+            File.WriteAllText(
+                SaveFileDialogCsv.FileName,
+                sb.ToString(),
+                Encoding.UTF8)
+
+            MessageBox.Show("CSV保存完了")
+
+        End If
+
+    End Sub
+
+End Class
