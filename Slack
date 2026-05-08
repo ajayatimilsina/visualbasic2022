@@ -1,4 +1,7 @@
 
+,投稿
+
+,http://api.slack.com/apps 
 Public Class Form1
 
     ' [Submit] ボタンをクリックした時の処理
