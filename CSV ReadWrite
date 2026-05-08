@@ -1,4 +1,8 @@
- 'コントロールとプロパティの設定
+ 'ツール（T）
+ '(N)
+'CSVを選択し、インストールする
+
+'コントロールとプロパティの設定
 '例
 'コントロール名　プロパティ名　　内容
 'Textbox        name          Text boxinputCSVFiileName
