@@ -1,1 +1,36 @@
 
+Public Class Form1
+
+    ' [Submit] ボタンをクリックした時の処理
+    Private Sub ButPost_Click(sender As Object, e As EventArgs) Handles ButPost.Click
+
+        ' Slack Incoming Webhook URL
+        Dim strWebHookUrl As String =
+            "https://hooks.slack.com/services/XXXXXXXX/XXXXXXXX/XXXXXXXXXXXXXXXX"
+
+        ' 送信するメッセージ
+        Dim strData As String =
+            String.Format("{{""text"":""{0}""}}", TxtPost.Text)
+
+        ' WebClient 作成
+        Dim client As New Net.WebClient()
+
+        ' ヘッダー設定
+        client.Headers.Add(
+            Net.HttpRequestHeader.ContentType,
+            "application/json;charset=UTF-8"
+        )
+
+        ' UTF-8 設定
+        client.Encoding = System.Text.Encoding.UTF8
+
+        ' Slackへ送信
+        Dim reply As String =
+            client.UploadString(strWebHookUrl, strData)
+
+        ' 結果表示
+        MessageBox.Show("投稿完了 : " & reply)
+
+    End Sub
+
+End Class
