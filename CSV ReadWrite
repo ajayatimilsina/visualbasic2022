@@ -1,3 +1,5 @@
+ コントロールとプロパティの設定
+
 Imports System.IO
 Imports System.Text
 Imports System.Data
