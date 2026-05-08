@@ -1,0 +1,90 @@
+Imports System.IO
+Imports System.Text
+Imports System.Data
+
+Public Class Form1
+    Dim dataTable As New DataTable()
+
+    ' =========================
+    ' CSV 読み込み
+    ' =========================
+    Private Sub ButtonCsvRead_Click(sender As Object, e As EventArgs) Handles ButtonCsvRead.Click
+
+        If OpenFileDialogCsv.ShowDialog() <> DialogResult.OK Then Return
+        TextBoxInputCSVFileName.Text = OpenFileDialogCsv.FileName
+
+        Try
+            ' DataTableの初期化
+            Dim dt As New DataTable()
+
+            ' 他のプロセス（Excel等）が開いていても読み込めるようにストリームを開く
+            Using fs As New FileStream(OpenFileDialogCsv.FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)
+                Using sr As New StreamReader(fs, Encoding.UTF8)
+
+                    ' --- 1. ヘッダーの読み込み ---
+                    Dim headerLine As String = sr.ReadLine()
+                    If headerLine IsNot Nothing Then
+                        Dim headers() As String = headerLine.Split(","c)
+                        For Each header As String In headers
+                            dt.Columns.Add(header.Trim(""""c)) ' 引用符があれば除去
+                        Next
+                    End If
+
+                    ' --- 2. データの読み込み ---
+                    While Not sr.EndOfStream
+                        Dim line As String = sr.ReadLine()
+                        If String.IsNullOrWhiteSpace(line) Then Continue While
+
+                        Dim fields() As String = line.Split(","c)
+
+                        ' 【重要】列数が一致する場合のみ追加（Indexエラー防止）
+                        If fields.Length = dt.Columns.Count Then
+                            ' 引用符の除去処理をして追加
+                            Dim cleanFields = fields.Select(Function(f) f.Trim(""""c)).ToArray()
+                            dt.Rows.Add(cleanFields)
+                        End If
+                    End While
+                End Using
+            End Using
+
+            ' DataGridViewにセット
+            dataTable = dt
+            DataGridViewCsv.DataSource = Nothing
+            DataGridViewCsv.DataSource = dataTable
+
+            MessageBox.Show("読み込み成功: " & dataTable.Rows.Count & "件")
+
+        Catch ex As Exception
+            MessageBox.Show("読み込みエラー: " & ex.Message)
+        End Try
+    End Sub
+
+    ' =========================
+    ' CSV 出力
+    ' =========================
+    Private Sub ButtonCsvWrite_Click(sender As Object, e As EventArgs) Handles ButtonCsvWrite.Click
+
+        If dataTable.Rows.Count = 0 Then Return
+        If SaveFileDialogCsv.ShowDialog() <> DialogResult.OK Then Return
+
+        Try
+            Dim sb As New StringBuilder()
+
+            ' ヘッダー
+            Dim headers = dataTable.Columns.Cast(Of DataColumn).Select(Function(c) """" & c.ColumnName & """")
+            sb.AppendLine(String.Join(",", headers))
+
+            ' データ
+            For Each row As DataRow In dataTable.Rows
+                Dim fields = row.ItemArray.Select(Function(f) """" & f.ToString().Replace("""", """""") & """")
+                sb.AppendLine(String.Join(",", fields))
+            Next
+
+            File.WriteAllText(SaveFileDialogCsv.FileName, sb.ToString(), Encoding.UTF8)
+            MessageBox.Show("保存完了")
+
+        Catch ex As Exception
+            MessageBox.Show("保存エラー: " & ex.Message)
+        End Try
+    End Sub
+End Class
