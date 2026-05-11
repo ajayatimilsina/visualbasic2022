@@ -77,3 +77,71 @@ Private Sub FormBallGame_Load(
 
 End Sub
 
+20260511_13003
+Public Class FormBallGame
+
+    Private canvas As Bitmap
+
+    ' 正解の文字
+    Private correctText As String = "电影"
+
+    Private Sub FormBallGame_Load(
+        sender As Object,
+        e As EventArgs
+    ) Handles MyBase.Load
+
+        ' 円を描画
+        DrawCircleSelectPictureBox()
+
+        ' 下のPictureBoxに文字を描画
+        DrawMainPictureBox(
+            Brushes.Gray,
+            correctText
+        )
+
+    End Sub
+
+    ' 下のPictureBoxに描画する
+    Private Sub DrawMainPictureBox(
+        color As Brush,
+        text As String
+    )
+
+        ' 描画先となるBitmapを作成
+        canvas = If(
+            canvas Is Nothing,
+            New Bitmap(
+                MainPictureBox.Width,
+                MainPictureBox.Height
+            ),
+            canvas
+        )
+
+        ' canvasへ描画
+        Using g As Graphics =
+            Graphics.FromImage(canvas)
+
+            ' 背景を白にする
+            g.Clear(Color.White)
+
+            ' 文字列を描画
+            g.DrawString(
+                text,
+                New Font(
+                    TextHint.Font.FontFamily,
+                    MainPictureBox.Height * 2 / 3
+                ),
+                color,
+                MainPictureBox.Width / 4.5,
+                -MainPictureBox.Height / 10
+            )
+
+        End Using
+
+        ' PictureBoxへ表示
+        MainPictureBox.Image = canvas
+
+    End Sub
+
+End Class
+
