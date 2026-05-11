@@ -66,3 +66,14 @@ Public Class FormBallGame
 
 End Class ' ← 改行して正しく閉じます
 
+
+Private Sub FormBallGame_Load(
+    sender As Object,
+    e As EventArgs
+) Handles MyBase.Load
+
+    ' Draw a circle in the PictureBox when the form is displayed
+    DrawCircleSelectPictureBox()
+
+End Sub
+
