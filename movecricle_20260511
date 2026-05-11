@@ -1,1 +1,68 @@
+Public Class FormBallGame
+    Private Sub TextHunt_TextChanged(sender As Object, e As EventArgs) Handles TextHunt.TextChanged
+
+    End Sub
+
+    Private Sub SelectPictureBox_Click(sender As Object, e As EventArgs) Handles SelectPictureBox.Click
+
+    End Sub
+End Class
+
+
+Private Sub DrawCircleSelectPictureBox()
+
+    Dim height = SelectPictureBox.Height
+    Dim width = SelectPictureBox.Width
+
+    ' Create a canvas with the same size as the PictureBox
+    Dim selectCanvas = New Bitmap(width, height)
+
+    ' Prepare for drawing on the canvas
+    Using g = Graphics.FromImage(selectCanvas)
+
+        ' Draw a light blue circle
+        g.FillEllipse(
+            Brushes.LightBlue,
+            0, 0, height, height
+        )
+
+        ' Display the drawing in the PictureBox
+        SelectPictureBox.Image = selectCanvas
+
+    End Using
+    ' The variable g is automatically released here
+
+End Sub
+
+Public Class FormBallGame
+
+    Private Sub TextHunt_TextChanged(sender As Object, e As EventArgs) Handles TextHunt.TextChanged
+        ' テキストが変更されたときの処理（必要に応じて記述）
+    End Sub
+
+    Private Sub DrawCircleSelectPictureBox()
+
+        Dim height As Integer = SelectPictureBox.Height
+        Dim width As Integer = SelectPictureBox.Width
+
+        ' 1. 古い画像がすでにPictureBoxにある場合は、メモリ解放（Dispose）する
+        If SelectPictureBox.Image IsNot評 AndAlso SelectPictureBox.Image IsNot Nothing Then
+            SelectPictureBox.Image.Dispose()
+        End If
+
+        ' 2. 新しいキャンバスを作成
+        Dim selectCanvas As New Bitmap(width, height)
+
+        ' 3. キャンバスに描画
+        Using g As Graphics = Graphics.FromImage(selectCanvas)
+            ' 水色の円を描画
+            g.FillEllipse(Brushes.LightBlue, 0, 0, height, height)
+        End Using ' ここで g（Graphics）は安全に解放されます
+
+        ' 4. 作成した画像をPictureBoxに表示
+        SelectPictureBox.Image = selectCanvas
+
+    End Sub
+
+End Class ' ← 改行して正しく閉じます
 
