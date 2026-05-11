@@ -1,0 +1,182 @@
+Public Class Ball
+    ' --- 外部から変更できない値 ---
+    Private Const radius As Integer = 40
+    Private ReadOnly kanji As String
+    Private ReadOnly fontName As String
+    Private ReadOnly brushColor As Brush
+    Private ReadOnly pictureBox As PictureBox
+    Private ReadOnly canvas As Bitmap
+
+    Private position As New Point(0, 0)
+    Private previous As New Point(0, 0)
+    Private direction As New Point(1, 1)
+
+    ' --- 公開プロパティ（移動速度） ---
+    Public Property Pitch As Integer = CInt(radius / 2)
+
+    ' --- コンストラクタ ---
+    Public Sub New(pb As PictureBox, cv As Bitmap, cl As Brush, st As String, fn As String)
+        pictureBox = pb
+        canvas = cv
+        brushColor = cl
+        kanji = st
+        fontName = fn
+    End Sub
+
+    ' --- ボールを描画する ---
+    Public Sub PutCircle(x As Integer, y As Integer)
+        position.X = x
+        position.Y = y
+
+        Using g As Graphics = Graphics.FromImage(canvas)
+            ' 滑らかに描画
+            g.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
+
+            ' 円を描く（radius * 2 で直径にする）
+            g.FillEllipse(brushColor, x, y, radius * 2, radius * 2)
+
+            ' 漢字を描く
+            Using f As New Font(fontName, radius)
+                g.DrawString(kanji, f, Brushes.Black, x, y)
+            End Using
+        End Using
+
+        ' PictureBoxを更新
+        pictureBox.Image = canvas
+    End Sub
+
+    ' --- ボールを消す（白で上塗りする） ---
+    Public Sub DeleteCircle()
+        ' 初回のみpreviousを現在地に設定
+        If previous.X = 0 AndAlso previous.Y = 0 Then
+            previous = New Point(position.X, position.Y)
+        End If
+
+        Using g As Graphics = Graphics.FromImage(canvas)
+            ' 前回の位置を白で塗りつぶす
+            g.FillEllipse(Brushes.White, previous.X, previous.Y, radius * 2, radius * 2)
+        End Using
+
+        pictureBox.Image = canvas
+    End Sub
+
+    ' --- 移動処理 ---
+    Public Sub Move()
+        ' ① 前回の表示を消す
+        ' ※直前の移動先(position)を「前回(previous)」としてから消去
+        previous = New Point(position.X, position.Y)
+        DeleteCircle()
+
+        ' ② 新しい移動先の計算
+        Dim x As Integer = position.X + (Pitch * direction.X)
+        Dim y As Integer = position.Y + (Pitch * direction.Y)
+
+        ' ③ 壁跳ね返り補正
+        If x >= pictureBox.Width - radius * 2 Then
+            direction.X = -1 ' 右端に当たったら左へ
+        ElseIf x <= 0 Then
+            direction.X = 1  ' 左端に当たったら右へ
+        End If
+
+        If y >= pictureBox.Height - radius * 2 Then
+            direction.Y = -1 ' 下端に当たったら上へ
+        ElseIf y <= 0 Then
+            direction.Y = 1  ' 上端に当たったら下へ
+        End If
+
+        ' ④ 新しい位置を確定させて描画
+        position.X = x
+        position.Y = y
+        PutCircle(position.X, position.Y)
+    End Sub
+
+End Class
+
+
+Public Class FormBallGame
+    ' --- クラス共通変数 ---
+    Private canvas As Bitmap
+    Private Const correctText As String = "獲" ' 正解の文字
+    Private Const mistakeText As String = "僕" ' 間違いの文字（例）
+
+    ' Ballクラスの配列
+    Private balls As Ball()
+
+    ' 漢字と色の配列
+    Private kanjis As String()
+    Private ballColors As Brush() = {
+        Brushes.LightPink,
+        Brushes.LightBlue,
+        Brushes.LightGray,
+        Brushes.LightCoral,
+        Brushes.LightGreen
+    }
+
+    Private fontName As String
+    Private nowTime As Double = 0.0
+    Private Const ballCount As Integer = 4 ' 0から数えて4まで＝合計5個
+    Private randomResult As Integer = 0
+
+    ' --- ロード時の処理 ---
+    Private Sub FormBallGame_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' 正解ラベルの設定
+        TextHunt.Text = correctText
+        fontName = TextHunt.Font.Name ' TextHuntと同じフォントを使用
+
+        ' 描画エリアの初期化
+        If canvas Is Nothing Then
+            canvas = New Bitmap(MainPictureBox.Width, MainPictureBox.Height)
+        End If
+
+        ' 配列の初期化
+        balls = New Ball(ballCount) {}
+        kanjis = New String(ballCount) {}
+
+        ' 1. 全てのボールに「間違い」をセット
+        For i As Integer = 0 To ballCount
+            kanjis(i) = mistakeText
+        Next
+
+        ' 2. ランダムに1つだけ「正解」をセット
+        Dim rnd As New Random()
+        randomResult = rnd.Next(0, ballCount + 1)
+        kanjis(randomResult) = correctText
+
+        ' 3. ボールのインスタンス作成と初期配置
+        For i As Integer = 0 To ballCount
+            ' Ballクラスを作成（引数：PictureBox, キャンバス, 色, 漢字, フォント）
+            balls(i) = New Ball(MainPictureBox, canvas, ballColors(i), kanjis(i), fontName)
+
+            ' ランダムな初期位置に配置
+            Dim startX As Integer = rnd.Next(0, MainPictureBox.Width - 80) ' radius*2分を引く
+            Dim startY As Integer = rnd.Next(0, MainPictureBox.Height - 80)
+            balls(i).PutCircle(startX, startY)
+        Next
+
+        ' タイマー開始
+        nowTime = 0.0
+        Timer1.Start()
+    End Sub
+
+    ' --- タイマー処理（ボールを動かす） ---
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+        ' 全てのボールに対してMoveメソッドを実行
+        For i As Integer = 0 To ballCount
+            balls(i).Move()
+        Next
+
+        ' 経過時間の計算（例：0.1秒ずつ加算）
+        nowTime += Timer1.Interval / 1000.0
+    End Sub
+
+    ' --- リスタート処理 ---
+    Private Sub RestartButton_Click(sender As Object, e As EventArgs) Handles RestartButton.Click
+        ' キャンバスをクリア（白で塗りつぶす）
+        Using g As Graphics = Graphics.FromImage(canvas)
+            g.Clear(Color.White)
+        End Using
+
+        ' ロード時と同じ処理を実行
+        FormBallGame_Load(sender, e)
+    End Sub
+End Class
