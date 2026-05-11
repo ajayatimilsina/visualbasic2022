@@ -1,0 +1,161 @@
+
+ ' 間違いボール探し
+ ' Creating a "Move Circle" (or Bouncing Ball) game in Visual Studio 2022 using Visual Basic (VB.NET) is a great way to learn about GDI+ graphics and game loops.Based on the code you’ve been working on, here is the complete, structured guide to building the game from scratch.1. Project SetupOpen Visual Studio 2022.Create a new project: Windows Forms App (.NET Framework) or Windows Forms App (Visual Basic).Open the Toolbox and add these controls to your Form:PictureBox (Name: MainPictureBox) - This is your game screen.Timer (Name: Timer1) - This drives the animation.Button (Name: RestartButton) - To reset the game.2. Create the Ball Class (Ball.vb)Right-click your project > Add > Class > Name it Ball.vb. This class handles the logic for a single ball.VB.NetPublic Class Ball
+    Private Const radius As Integer = 25
+    Private ReadOnly kanji As String
+    Private ReadOnly fontName As String
+    Private ReadOnly brushColor As Brush
+    Private ReadOnly pictureBox As PictureBox
+    Private ReadOnly canvas As Bitmap
+    
+    Private position As New Point(0, 0)
+    Private direction As New Point(1, 1) ' 1 = Right/Down, -1 = Left/Up
+    Public Property Pitch As Integer = 5 ' Speed
+
+    Public Sub New(pb As PictureBox, cv As Bitmap, cl As Brush, st As String, fn As String)
+        pictureBox = pb
+        canvas = cv
+        brushColor = cl
+        kanji = st
+        fontName = fn
+    End Sub
+
+    ' Draw the ball and the character inside it
+    Public Sub Draw(g As Graphics)
+        g.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
+        ' Draw Circle
+        g.FillEllipse(brushColor, position.X, position.Y, radius * 2, radius * 2)
+        ' Draw Text
+        Using f As New Font(fontName, radius - 5)
+            g.DrawString(kanji, f, Brushes.Black, position.X + 5, position.Y + 5)
+        End Using
+    End Sub
+
+    ' Update position and handle wall bounces
+    Public Sub Move()
+        ' Move the ball
+        position.X += (Pitch * direction.X)
+        position.Y += (Pitch * direction.Y)
+
+        ' Wall Collision (Right and Left)
+        If position.X >= pictureBox.Width - (radius * 2) OrElse position.X <= 0 Then
+            direction.X *= -1
+        End If
+
+        ' Wall Collision (Bottom and Top)
+        If position.Y >= pictureBox.Height - (radius * 2) OrElse position.Y <= 0 Then
+            direction.Y *= -1
+        End If
+    End Sub
+
+    ' Randomize position (used during start/restart)
+    Public Sub SetRandomPosition(rnd As Random)
+        position.X = rnd.Next(0, pictureBox.Width - (radius * 2))
+        position.Y = rnd.Next(0, pictureBox.Height - (radius * 2))
+    End Sub
+End Class
+ ' 3. The Main Form Code (Form1.vb)This manages the canvas and the list of balls.VB.NetPublic Class Form1
+    Private canvas As Bitmap
+    Private balls As New List(Of Ball)
+    Private ReadOnly rnd As New Random()
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        InitializeGame()
+        Timer1.Interval = 20 ' 50 Frames per second
+        Timer1.Start()
+    End Sub
+
+    Private Sub InitializeGame()
+        ' 1. Create the drawing surface
+        canvas = New Bitmap(MainPictureBox.Width, MainPictureBox.Height)
+        MainPictureBox.Image = canvas
+        balls.Clear()
+
+        ' 2. Create 5 balls with different colors
+        Dim colors As Brush() = {Brushes.LightPink, Brushes.LightBlue, Brushes.LightGreen, Brushes.Gold, Brushes.Orange}
+        Dim labels As String() = {"獲", "僕", "僕", "僕", "僕"}
+
+        For i As Integer = 0 To 4
+            Dim b As New Ball(MainPictureBox, canvas, colors(i), labels(i), Me.Font.Name)
+            b.SetRandomPosition(rnd)
+            balls.Add(b)
+        Next
+    End Sub
+
+    ' The Game Loop
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+        ' Create a fresh graphics object to clear the screen each frame
+        Using g As Graphics = Graphics.FromImage(canvas)
+            g.Clear(Color.White) ' Erase previous frame
+
+            For Each b In balls
+                b.Move()
+                b.Draw(g)
+            Next
+        End Using
+
+        ' Refresh the PictureBox to show the new drawing
+        MainPictureBox.Invalidate()
+    End Sub
+
+    Private Sub RestartButton_Click(sender As Object, e As EventArgs) Handles RestartButton.Click
+        InitializeGame()
+    End Sub
+End Class
+
+
+ ' 4. Critical Concepts ExplainedThe Coordinate SystemWindows Forms uses a 2D coordinate system where the origin $(0, 0)$ is the top-left.X-axis: Increases to the right.Y-axis: Increases downward.The Game Loop (Timer)In a game, we don't just draw once. We perform these steps repeatedly (usually 30–60 times per second):Clear: Wipe the previous image.Update: Calculate new positions for all objects.Draw: Render the objects at their new positions.Refresh: Tell the computer to display the new image.Collision LogicTo make the ball bounce, we check if the ball's position has exceeded the width or height of the PictureBox. If it has, we multiply the direction by $-1$ to reverse it (e.g., changing $1$ to $-1$ makes it move left instead of right).Troubleshooting VS 2022Smoothness: If the ball flickers, ensure your PictureBox has DoubleBuffered set to True (you may need to create a custom PictureBox class to enable this property).Errors: If you see "Handles clause requires a WithEvents variable," make sure the name in your code matches the (Name) property of the button in the Designer.
+पाईंले बनाउन खोज्नुभएको यो "Move Circle" (Bouncing Ball) गेम प्रोग्रामिङ सिक्नको लागि एकदमै राम्रो प्रोजेक्ट हो। भिजुअल स्टुडियो २०२२ (Visual Studio 2022) मा VB.NET प्रयोग गरेर यो गेम बनाउने प्रक्रियालाई म नेपालीमा व्याख्या गरिदिन्छु:
+
+१. प्रोजेक्ट सेटअप (Project Setup)
+Visual Studio 2022 खोल्नुहोस्।
+
+Windows Forms App (Visual Basic) प्रोजेक्ट छान्नुहोस्।
+
+तपाईंको फर्म (Form) मा यी तीन चिजहरू राख्नुहोस्:
+
+PictureBox: यसको नाम MainPictureBox राख्नुहोस् (यसमा बलहरू गुड्छन्)।
+
+Timer: यसको नाम Timer1 राख्नुहोस् (यसले एनिमेसन चलाउँछ)।
+
+Button: यसको नाम RestartButton राख्नुहोस्।
+
+२. बल क्लास (Ball Class) बुझौं
+तपाईंले बनाउनुभएको Ball.vb क्लासले एउटा बलको सबै काम सम्हाल्छ।
+
+Variables: यसमा बलको साइज (Radius), रङ (BrushColor), र कुन अक्षर (Kanji) देखाउने भन्ने जानकारी हुन्छ।
+
+Move Method: यसले बललाई अगाडि बढाउँछ। यदि बलले भित्ता छोयो भने, यो फर्किन्छ (Bounce हुन्छ)।
+
+दायाँ वा बायाँ भित्ता छोएमा: direction.X लाई उल्टो बनाउँछ।
+
+माथि वा तलको भित्ता छोएमा: direction.Y लाई उल्टो बनाउँछ।
+
+३. मुख्य अवधारणा (Core Concepts)
+क. कोअर्डिनेट सिस्टम (Coordinate System)
+कम्प्युटर स्क्रिनमा (0,0) बिन्दु माथिको बायाँ कुना (Top-Left) मा हुन्छ।
+
+X बढ्नु भनेको दायाँ जानु हो।
+
+Y बढ्नु भनेको तल जानु हो।
+
+ख. गेम लुप (Game Loop)
+हाम्रो Timer1_Tick ले गेम लुपको काम गर्छ। यसले हरेक सेकेन्डमा धेरै पटक यी कामहरू गर्छ:
+
+Clear: पुरानो चित्र मेट्छ (g.Clear(Color.White))।
+
+Move: बललाई नयाँ ठाउँमा सार्छ।
+
+Draw: नयाँ ठाउँमा बल कोर्छ।
+
+Refresh: स्क्रिनमा नयाँ चित्र देखाउँछ।
+
+४. केही महत्त्वपूर्ण सुझावहरू
+Flickering (झिम्काउने समस्या): यदि बल चल्दा स्क्रिन झिम्कियो भने PictureBox को DoubleBuffered प्रोपर्टी मिलाउनुपर्छ।
+
+Collision Logic: बलको बाउन्ड्री चेक गर्दा जहिले पनि Radius (अर्धव्यास) लाई ध्यान दिनुपर्छ ताकि बल आधा भित्ताभित्र नछिरोस्।
+
+तपाईंले दिएको कोड एकदम सही छ। यसलाई रन गर्दा ५ वटा फरक रङका बलहरू स्क्रिनमा उफ्रिन थाल्नेछन्। ती मध्ये एउटामा "獲" अक्षर हुनेछ भने बाँकीमा "僕" हुनेछ।
+
+के तपाईं यसमा माउसले क्लिक गर्दा "सही बल" पत्ता लगाउने कोड थप्न चाहनुहुन्छ?
+
