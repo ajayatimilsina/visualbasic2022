@@ -1,0 +1,164 @@
+From1.vb
+
+Public Class FormBallGame
+    Private canvas As Bitmap
+    Private balls As New List(Of Ball)
+    Private rnd As New Random()
+
+    ' 正解と間違いの漢字
+    Private Const correctText As String = "獲"
+    Private Const mistakeText As String = "僕"
+
+    ' フォームロード時の処理
+    Private Sub FormBallGame_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' コントロールの初期設定
+        TextHunt.Text = correctText
+        TextTimerS.Text = "30"
+
+        ' ゲームエリア（キャンバス）の初期化
+        InitCanvas()
+
+        ' 見本（SelectPictureBox）の描画
+        DrawSelectTarget()
+
+        ' ボールの生成
+        CreateBalls()
+
+        ' タイマー開始
+        Timer1.Interval = 20
+        Timer1.Start()
+    End Sub
+
+    ' キャンバスの初期化
+    Private Sub InitCanvas()
+        If canvas IsNot Nothing Then canvas.Dispose()
+        canvas = New Bitmap(MainpictureBox.Width, MainpictureBox.Height)
+        MainpictureBox.Image = canvas
+    End Sub
+
+    ' 見本エリアの描画
+    Private Sub DrawSelectTarget()
+        Dim selectCanvas = New Bitmap(SelectPictureBox.Width, SelectPictureBox.Height)
+        Using g = Graphics.FromImage(selectCanvas)
+            g.Clear(Color.White)
+            g.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
+            ' 見本用の青い円を描く
+            g.FillEllipse(Brushes.LightBlue, 10, 5, 40, 40)
+            ' 見本用の文字を描く
+            Using f As New Font(Me.Font.Name, 20)
+                g.DrawString(correctText, f, Brushes.Black, 15, 10)
+            End Using
+        End Using
+        SelectPictureBox.Image = selectCanvas
+    End Sub
+
+    ' ボールの作成
+    Private Sub CreateBalls()
+        balls.Clear()
+        Dim colors As Brush() = {Brushes.LightBlue, Brushes.LightPink, Brushes.LightGray, Brushes.LightCoral, Brushes.LightGreen}
+
+        ' ランダムに正解を1つ決める
+        Dim winIndex As Integer = rnd.Next(0, 5)
+
+        For i As Integer = 0 To 4
+            Dim txt As String = If(i = winIndex, correctText, mistakeText)
+            Dim b As New Ball(MainpictureBox, canvas, colors(i Mod colors.Length), txt, Me.Font.Name)
+
+            ' ランダムな初期位置
+            Dim startX As Integer = rnd.Next(0, Math.Max(1, MainpictureBox.Width - 100))
+            Dim startY As Integer = rnd.Next(0, Math.Max(1, MainpictureBox.Height - 100))
+            b.PutCircle(startX, startY)
+
+            balls.Add(b)
+        Next
+    End Sub
+
+    ' タイマーごとの更新処理
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+        Using g As Graphics = Graphics.FromImage(canvas)
+            g.Clear(Color.White) ' 画面を白でリセット
+            For Each b In balls
+                b.Move()
+            Next
+        End Using
+        MainpictureBox.Invalidate() ' 画面を更新
+    End Sub
+
+    ' 再スタートボタン
+    Private Sub RestartButtom_Click(sender As Object, e As EventArgs) Handles RestartButtom.Click
+        Timer1.Stop()
+        InitCanvas()
+        CreateBalls()
+        Timer1.Start()
+    End Sub
+
+    ' 下のエントリをクリックした時の処理
+    Private Sub MainpictureBox_MouseClick(sender As Object, e As MouseEventArgs) Handles MainpictureBox.MouseClick
+        ' クリックで位置を変える演出
+        CreateBalls()
+    End Sub
+End Class
+
+Ball.vb
+Public Class Ball
+    Private Const radius As Integer = 40
+    Public position As New Point(0, 0)
+    Private direction As New Point(1, 1)
+    Public Property Pitch As Integer = 8
+
+    Private ReadOnly kanji As String
+    Private ReadOnly brushColor As Brush
+    Private ReadOnly pictureBox As PictureBox
+    Private ReadOnly canvas As Bitmap
+    Private ReadOnly fontName As String
+
+    ' コンストラクタ
+    Public Sub New(pb As PictureBox, cv As Bitmap, cl As Brush, st As String, fn As String)
+        pictureBox = pb
+        canvas = cv
+        brushColor = cl
+        kanji = st
+        fontName = fn
+
+        ' 初期の向きをランダムに設定
+        Dim r As New Random()
+        direction.X = If(r.Next(0, 2) = 0, 1, -1)
+        direction.Y = If(r.Next(0, 2) = 0, 1, -1)
+    End Sub
+
+    ' 初期配置
+    Public Sub PutCircle(x As Integer, y As Integer)
+        position.X = x
+        position.Y = y
+        Draw()
+    End Sub
+
+    ' 描画処理
+    Private Sub Draw()
+        Using g As Graphics = Graphics.FromImage(canvas)
+            g.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
+            ' 円を描く
+            g.FillEllipse(brushColor, position.X, position.Y, radius * 2, radius * 2)
+            ' 文字を描く
+            Using f As New Font(fontName, 25, FontStyle.Bold)
+                g.DrawString(kanji, f, Brushes.Black, position.X + 15, position.Y + 15)
+            End Using
+        End Using
+    End Sub
+
+    ' 移動処理
+    Public Sub Move()
+        position.X += Pitch * direction.X
+        position.Y += Pitch * direction.Y
+
+        ' 壁の跳ね返り判定
+        If position.X >= pictureBox.Width - radius * 2 OrElse position.X <= 0 Then
+            direction.X *= -1
+        End If
+        If position.Y >= pictureBox.Height - radius * 2 OrElse position.Y <= 0 Then
+            direction.Y *= -1
+        End If
+
+        Draw()
+    End Sub
+End Class
