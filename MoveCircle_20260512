@@ -1,3 +1,51 @@
+
+From1~間違いボール探し
+1200, 800
+FormBallGame
+
+SplitContainer1
+Panel2
+70
+
+TextBox1^TextHunt
+
+
+TextBox1^TextTimerS
+
+lable
+を探せ
+下の背景に表示された漢字と同じの色円
+下のエリアをクリックするとボールの位置が変わります
+秒
+記録:
+
+Button　
+再スタート
+
+picturebox
+
+SelectPictureBox
+White
+275, 50
+
+
+スタートアップオブジェクト
+MoveCircle.FromBallGame
+
+
+SplitContainer1
+Panel2
+
+picturebox
+MainpictureBox
+Zoom
+Fill
+White
+
+Timer1
+20
+
+
 From1.vb
 
 Public Class FormBallGame
