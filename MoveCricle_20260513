@@ -1,1 +1,49 @@
+上のPictureBox　コントロールに円を描いて見る
 
+panal1 のPictureBox
+
+Public Class FormBallGame
+    ' 円の座標を保存するリスト
+    Private circles As New List(Of Point)
+
+    ' --- Panel1 (上) の PictureBox 処理 ---
+
+    ' クリックしたとき
+    Private Sub SelectPictureBox_MouseClick(sender As Object, e As MouseEventArgs) Handles SelectPictureBox.MouseClick
+        ' クリックした座標をリストに追加
+        circles.Add(New Point(e.X, e.Y))
+        ' SelectPictureBox（自分自身）を再描画
+        SelectPictureBox.Invalidate()
+    End Sub
+
+    ' 描画ルール
+    Private Sub SelectPictureBox_Paint(sender As Object, e As PaintEventArgs) Handles SelectPictureBox.Paint
+        Dim radius As Integer = 20
+        e.Graphics.SmoothingMode = Drawing2D.SmoothingMode.AntiAlias
+
+        Using redPen As New Pen(Color.Red, 2)
+            For Each p As Point In circles
+                ' p の座標を使って円を描く
+                e.Graphics.DrawEllipse(redPen, p.X - radius, p.Y - radius, radius * 2, radius * 2)
+            Next
+        End Using
+    End Sub
+
+    ' --- Panel2 (下) の PictureBox 処理 ---
+    ' (MainpictureBox も同様に Handles MainpictureBox.Paint があれば描画されます)
+
+    Private Sub MainpictureBox_MouseClick(sender As Object, e As MouseEventArgs) Handles MainpictureBox.MouseClick
+        circles.Add(New Point(e.X, e.Y))
+        MainpictureBox.Invalidate()
+    End Sub
+
+    Private Sub MainpictureBox_Paint(sender As Object, e As PaintEventArgs) Handles MainpictureBox.Paint
+        ' 下の PictureBox にも同じように描画コードを書く
+        Dim radius As Integer = 20
+        Using bluePen As New Pen(Color.Blue, 2)
+            For Each p As Point In circles
+                e.Graphics.DrawEllipse(bluePen, p.X - radius, p.Y - radius, radius * 2, radius * 2)
+            Next
+        End Using
+    End Sub
+End Class
