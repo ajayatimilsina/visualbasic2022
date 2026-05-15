@@ -1,0 +1,104 @@
+
+Public Class Form1
+    ' --- 準備：箱を用意する ---
+    Dim nowtime As Integer = 0    ' 経過した時間を数える箱
+    Dim endtime As Integer = 10   ' 何秒で終わるかを決める箱
+
+    ' --- タイマーが1秒刻むごとに動く命令 ---
+    Private Sub timercontrol_Tick(sender As Object, e As EventArgs) Handles timercontrol.Tick
+
+        ' 1. 「経過時間」に1を足す
+        nowtime = nowtime + 1
+
+        ' 2. 「残り時間」を計算する
+        Dim Remainingtime As Integer = endtime - nowtime
+
+        ' 3. 画面（テキストボックス）に表示する
+        textremainingtime.Text = Remainingtime.ToString()
+
+        ' 4. もし「残り時間」が 0 になったら…
+        If Remainingtime <= 0 Then
+            timercontrol.Stop()           ' タイマーを止める
+            MessageBox.Show("時間になりました！") ' 画面にメッセージを出す
+        End If
+
+    End Sub
+End Class
+
+
+
+
+20260515
+
+नमस्ते! Visual Studio 2022 मा Windows Forms App (C#) प्रयोग गरेर 'Timer' कसरी बनाउने भनेर म एकदम सुरुदेखि (Step-by-Step) नेपालीमा बुझाउँछु।
+
+१. नयाँ प्रोजेक्ट सुरु गर्ने
+Visual Studio 2022 खोल्नुहोस्।
+
+"Create a new project" मा क्लिक गर्नुहोस्।
+
+खोज्ने ठाउँमा (Search bar) "Windows Forms" लेख्नुहोस् र Windows Forms App (C# वाला) रोज्नुहोस्।
+
+प्रोजेक्टको नाम (जस्तै: MyFirstTimer) राख्नुहोस् र Next गर्दै Create थिच्नुहोस्।
+
+२. डिजाइन बनाउने (Design View)
+अब तपाईंको अगाडि एउटा खाली झ्याल (Form) देखिनेछ। बायाँतिरको Toolbox बाट यी चिजहरूलाई माउसले तानेर Form मा राख्नुहोस्:
+
+Label: यसले समय देखाउनेछ। (यसको नाम label1 हुन्छ)
+
+Button: यसलाई थिचेर टाइमर सुरु वा बन्द गरिन्छ। (यसको नाम button1 हुन्छ)
+
+Timer: यो "Components" भित्र हुन्छ। यसलाई Form मा तानेर छोड्नुहोस्। यो झ्यालको तलपट्टी timer1 भनेर बस्छ।
+
+३. सेटिङ मिलाउने (Properties)
+timer1 मा एक पटक क्लिक गर्नुहोस् र दायाँतिरको Properties विन्डोमा यी कुरा मिलाउनुहोस्:
+
+Interval: यहाँ 1000 लेख्नुहोस्। (१००० मिलिसेकेन्ड = १ सेकेन्ड हुन्छ)।
+
+Enabled: यसलाई False नै रहन दिनुहोस् (हामी बटन थिचेपछि मात्र सुरु गर्छौं)।
+
+४. कोड लेख्ने (C# Code)
+अब मुख्य काम सुरु हुन्छ।
+
+क) सेकेन्ड गन्नको लागि एउटा संख्या (Variable) बनाउने:
+सबैभन्दा माथि public partial class Form1 : Form को मुनि यो लाइन लेख्नुहोस्:
+
+C#
+int counter = 0; // कति सेकेन्ड भयो भनेर गन्नको लागि
+ख) हरेक सेकेन्डमा के हुने? (Timer Tick)
+डिजाइनमा भएको timer1 मा डबल क्लिक गर्नुहोस्। त्यसपछि यस्तो कोड लेख्नुहोस्:
+
+C#
+private void timer1_Tick(object sender, EventArgs e)
+{
+    counter++; // संख्यालाई १ ले बढाउने
+    label1.Text = counter.ToString() + " सेकेन्ड भयो"; // लेबलमा देखाउने
+}
+ग) बटन थिच्दा के हुने? (Button Click)
+डिजाइनमा फर्कनुहोस् र बटन (button1) मा डबल क्लिक गर्नुहोस्। त्यसपछि यो कोड लेख्नुहोस्:
+
+C#
+private void button1_Click(object sender, EventArgs e)
+{
+    if (timer1.Enabled)
+    {
+        timer1.Stop(); // चलिरहेको छ भने रोक्ने
+        button1.Text = "सुरु गर्नुहोस्";
+    }
+    else
+    {
+        timer1.Start(); // रोकिएको छ भने सुरु गर्ने
+        button1.Text = "रोक्नुहोस्";
+    }
+}
+५. प्रोग्राम चलाएर हेर्ने
+माथि भएको हरियो तिर जस्तो बटन (Start) थिच्नुहोस्।
+
+तपाईंको प्रोग्राम खुल्नेछ। बटन थिच्नुहोस्, लेबलमा सेकेन्ड बढ्न थाल्नेछ!
+
+केही थप टिप्स:
+Reset बटन: यदि तपाईंलाई समय फेरि 0 बाट सुरु गर्नु छ भने, अर्को एउटा बटन थप्नुहोस् र त्यसमा counter = 0; अनि label1.Text = "0"; लेख्नुहोस्।
+
+अक्षर ठूलो बनाउने: label1 मा क्लिक गरेर Properties मा जानुहोस् र Font मा गएर अक्षरको साइज बढाउनुहोस्।
+
+यदि तपाईंलाई कतै गाह्रो भयो वा बुझ्नुभएन भने निर्धक्क सोध्नुहोस् है!
