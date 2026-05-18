@@ -35,6 +35,7 @@ namespace uranai
 }
 
 
+20260518
 
 Public Class FormUranai
 
@@ -42,30 +43,37 @@ Public Class FormUranai
 
         Dim number As Integer
 
-        number = Val(TextBox1.Text)
+        number = DateTimeUranai.Value.DayOfYear
 
         Select Case number Mod 5
 
             Case 0
-                PictureBox1.Image = Image.FromFile("image0.bmp")
+                PictureBox1.Image = My.Resources.Daikichi
+                TextResult.Text = "大吉です！"
 
             Case 1
-                PictureBox1.Image = Image.FromFile("image1.bmp")
+                PictureBox1.Image = My.Resources.Chukichi
+                TextResult.Text = "中吉です！"
 
             Case 2
-                PictureBox1.Image = Image.FromFile("image2.bmp")
+                PictureBox1.Image = My.Resources.Shokichi
+                TextResult.Text = "小吉です！"
 
             Case 3
-                PictureBox1.Image = Image.FromFile("image3.bmp")
+                PictureBox1.Image = My.Resources.Kichi
+                TextResult.Text = "吉です！"
 
             Case 4
-                PictureBox1.Image = Image.FromFile("image4.bmp")
+                PictureBox1.Image = My.Resources.Kyo
+                TextResult.Text = "凶です！"
 
             Case Else
                 PictureBox1.Image = Nothing
+                TextResult.Text = ""
 
         End Select
 
     End Sub
 
+End Class
 End Class
