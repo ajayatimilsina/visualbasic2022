@@ -33,3 +33,39 @@ namespace uranai
         }
     }
 }
+
+
+
+Public Class FormUranai
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+
+        Dim number As Integer
+
+        number = Val(TextBox1.Text)
+
+        Select Case number Mod 5
+
+            Case 0
+                PictureBox1.Image = Image.FromFile("image0.bmp")
+
+            Case 1
+                PictureBox1.Image = Image.FromFile("image1.bmp")
+
+            Case 2
+                PictureBox1.Image = Image.FromFile("image2.bmp")
+
+            Case 3
+                PictureBox1.Image = Image.FromFile("image3.bmp")
+
+            Case 4
+                PictureBox1.Image = Image.FromFile("image4.bmp")
+
+            Case Else
+                PictureBox1.Image = Nothing
+
+        End Select
+
+    End Sub
+
+End Class
